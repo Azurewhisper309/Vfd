@@ -1,78 +1,100 @@
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
 import { CRMContext } from "./CrmContext";
 
-
 const Bye = () => {
-  const { forms, isdashEdit, setIsDashEdit, form, setForm, setForms } = useContext(CRMContext);
+  const { forms, setForms } = useContext(CRMContext); // Access forms and updater function from context
+  const [editingIndex, setEditingIndex] = useState(null); // Track which issue is being edited
+  const [editedTakeNumber, setEditedTakeNumber] = useState(""); // Track current edit value
+  const [editedStatues, setEditedStatues] = useState(""); // Track current edit value
+
+  // Enable editing mode for a specific issue
+  const handleEditTake = (index,nice) => {
+    if(nice){
+    setEditingIndex(index); // Set the index of the issue being edited
+    setEditedTakeNumber(forms[index].takeNumber || ""); // Pre-fill the input with the current value
     
-  // Toggle edit mode for the form
-  function handleEdit(index) {
-    setIsDashEdit(true); // Enable edit mode
-    const formToEdit = forms[index]; // Get the form to edit
-    setForm(formToEdit); // Set the selected form as the current form
   }
+  };
+   // Enable editing mode for a specific issue
+   const handleEditStatues = (index,nici) => {
+    setEditingIndex(index); // Set the index of the issue being edited
+    setEditedStatues(forms[index].statuess || ""); // Pre-fill the input with the current value
+  };
 
-  // Handle input changes for the form
-  function handleInputChange(event) {
-    const { name, value } = event.target;
-    setForm((prevForm) => ({ ...prevForm, [name]: value })); // Update the specific field in the form
-  }
+  // Handle input change for `takeNumber`
+  const handleInputChangeTake = (event) => {
+    setEditedTakeNumber((preveditedTakeNumber)=>({...preveditedTakeNumber,takeNumber:event.target.value})); // Update local state for `takeNumber`
+  };
 
-  // Handle form submission: Update the forms list
-  function handleFormSubmit(event) {
-    event.preventDefault(); // Prevent page refresh
+  const handleInputChangeStatues = (event) => {
+    setEditedStatues((preveditedStatues)=>({...preveditedStatues,statuess:event.target.value}));
+  };
+
+  // Save the changes to `takeNumber` and update global state
+  const handleSave = () => {
     setForms((prevForms) =>
-      prevForms.map((f) =>
-        f.uniqueNumber === form.uniqueNumber ? form : f // Update the matching form in the list
+      prevForms.map((form, index) =>
+        index === editingIndex
+          ? { ...form, takeNumber: editedTakeNumber,statues:editedStatues } // Update only the edited form
+          : form
       )
     );
-    setIsDashEdit(false); // Exit edit mode
-    setForm({ name: "", uniqueNumber: "", typeOf: "", takeNumber: "" }); // Reset the form state
-  }
+    setEditingIndex(null); // Exit edit mode
+    setEditedTakeNumber(""); // Reset the local state
+    setEditedStatues("");
+  };
+
+
+
+
+
 
   return (
     <div>
-      {!isdashEdit ? (
-        <div>
-          <ul>
-            {forms.map((f, index) => (
-              <li key={index}>
-                Name: {f.name}, Unique Number: {f.uniqueNumber}, Type: {f.typeOf}, TakeNumber: {f.takeNumber}
-                <button onClick={() => handleEdit(index)}>Edit</button>
-              </li>
-            ))}
-          </ul>
-          <Link to="/">Click to New!</Link>
-        </div>
-      ) : (
-        <div>
-          <h1>Edit Form</h1>
-          <ul>
-            {forms.map((f, index) => (
-              <li key={index}>
-                Name: {f.name}, Unique Number: {f.uniqueNumber}, Type: {f.typeOf}, TakeNumber: {f.takeNumber}
-                <button onClick={() => handleEdit(index)}>Edit</button>
-                 <form onSubmit={handleFormSubmit}>
+      <h1>All User's Issues</h1>
+      <ul>
+        {forms.map((form, index) => (
+          <li key={index}>
+            <span>Name: {form.name}</span>,{" "}
+            <span>Unique Number: {form.uniqueNumber}</span>,{" "}
+            <span>Type: {form.typeOf}</span>,{" "}
+            <span>Status: {form.statues}</span>,{""}
+            <span>
+              Take Number:{" "}
+              {editingIndex === index ? (
+                <div>
+                <input
+                  type="text"
+                  value={editedTakeNumber}
+                  onChange={handleInputChangeTake}
+                />
+                <input
+                  type="text"
+                  value={editedTakeNumber}
+                  onChange={handleInputChangeStatues}
+                />
+                </div>
+              ) : (
+                ((form.takeNumber || "Not Set")|(form.statues || "new to us") )
+              
+              )}
+            </span>
+            {editingIndex === index ? (
+              <div>
+              <button onClick={handleSave}>Save</button>
             
-            <div>
-              <label>Take Number: </label>
-              <input
-                type="text"
-                name="takeNumber"
-                value={form.takeNumber || ""}
-                onChange={handleInputChange}
-              />
-            </div>
-            <button type="submit">Save</button>
-          </form>
-              </li>
-            ))}
-          </ul>
-         
-          <Link to="/">Click to New!</Link>
-        </div>
-      )}
+              </div>
+            ) : (
+              <div>
+              <button onClick={() => handleEditStatues(index)}>Edit</button>
+              <button onClick={() => handleEditTake(index)}>Edit2</button>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+      <Link to="/">Back to Home</Link>
     </div>
   );
 };

@@ -8,7 +8,7 @@ export const CRMProvider = ({ children }) => {
   const [forms, setForms] = useState([]); // List of forms
   const [userId, setUserId] = useState("u9349535");
   const [issues, setIssues] = useState([]); // Issues state
-  const [form, setForm] = useState({ name: "", uniqueNumber: "", typeOf: "", takeNumber: "" });
+  const [form, setForm] = useState({ name: "", uniqueNumber: "", typeOf: "option1", takeNumber: "" ,statues:"new"});
   const [not, setNot] = useState([]); // Not relevant forms
   const [isClicked, setIsClicked] = useState(false); // Show/hide form
   const [isEditing, setIsEditing] = useState(false); // Editing state
