@@ -3,7 +3,7 @@ import { CRMContext } from "./CrmContext";
 
 
 export default function MineIssues() {
-    const {forms, setForms,setForm,not,setNot,setIsClicked,isEditing,setIsEditing,setEditingId }=useContext(CRMContext);
+    const {allForms,setAllForms,forms, setForms,setForm,not,setNot,setIsClicked,isEditing,setIsEditing,setEditingId }=useContext(CRMContext);
 //handle editing the issues form
 
     const handleEdit = (index) => {
@@ -11,6 +11,7 @@ export default function MineIssues() {
         const formToEdit = forms[index];
         setForm(formToEdit);
         setForms((prevForms) => prevForms.filter((_, i) => i !== index));
+        setAllForms((prevAllForms) => prevAllForms.filter((_, i) => i !== index));
         setIsClicked(true);
         setIsEditing(!isEditing);
         setIsEditing(true);
@@ -30,11 +31,8 @@ export default function MineIssues() {
       const formToRemove = forms[index];
       setNot((prevNot) => [...prevNot, formToRemove]);
       setForms((prevForms) => prevForms.filter((_, i) => i !== index));
-    } else {
-      const formToAdd = not[index];
-      setNot((prevNot) => prevNot.filter((_, i) => i !== index));
-      setForms((prevForms) => [...prevForms, formToAdd]);
-    }
+      
+    } 
   };
 
 
@@ -48,6 +46,7 @@ export default function MineIssues() {
             <span>Unique Number: {f.uniqueNumber}</span>,{" "}
             <span>Type: {f.typeOf}</span>
             <span>Take Number: {f.takeNumber}</span>
+            <span>Status: {f.status}</span>
             <button  onClick={()=>{ handleEdit(index)}}>Edit</button>
             <button onClick={() => toggleRelevance(index, false)}>Not Relevant</button>
           </li>
@@ -56,3 +55,14 @@ export default function MineIssues() {
     </div>
   )
 }
+
+// {form,handleEdito,toggleRelevanco}{
+// <li key={index}>
+// <span>Name: {form.name}</span>,{" "}
+// <span>Unique Number: {form.uniqueNumber}</span>,{" "}
+// <span>Type: {form.typeOf}</span>
+// <span>Take Number: {form.takeNumber}</span>
+// <button  onClick={()=>{ handleEdito(index)}}>Edit</button>
+// <button onClick={() => toggleRelevanco(index, false)}>Not Relevant</button>
+// </li>
+// }

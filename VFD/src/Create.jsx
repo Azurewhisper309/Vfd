@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { CRMContext } from "./CrmContext";
@@ -6,17 +6,20 @@ import MineIssues from "./MineIssues";
 
 const Create = () => {
   const {
-    forms,
+    
     setForms,
     form,
     setForm,
     not,
-    setNot,
     isClicked,
     setIsClicked,
     isEditing,
     setIsEditing,
+    setAllForms,
+    setNot
   } = useContext(CRMContext);
+
+  const [getBack,setGetBack]=useState(false);
 
   // Handle input changes for the form
   const handleInputChange = (event) => {
@@ -33,12 +36,21 @@ const Create = () => {
   const toggleFormVisibility = () => {
     setIsClicked(!isClicked);
   };
-
+  //FUNCTION FOR US TO RECOVER "NOT RELEVANT" ISSUES
+  function toggleRelevance(ind){
+      const formBack=not[ind];
+      setNot((prevNot) => prevNot.filter((_, i) => i !== ind));
+      setForms((prevForms) => [...prevForms, formBack]);
+      setGetBack(!getBack);
+    
+  }
+  
   // Submit the form and add it to the list
   const handleSubmit = (event) => {
     event.preventDefault();
     if (form.typeOf && form.uniqueNumber && form.name) {
       setForms((prevForms) => [...prevForms, form]);
+      setAllForms((prevAllForms) => [...prevAllForms, form]);
       setForm({ name: "", uniqueNumber: "", typeOf: "option1", takeNumber: "" });
       setIsEditing(false);
     }
@@ -89,7 +101,7 @@ const Create = () => {
         {not.map((f, index) => (
           <li key={index}>
             Name: {f.name}, Unique Number: {f.uniqueNumber}, Type: {f.typeOf}, TakeNumber: {f.takeNumber}
-            <button onClick={() => toggleRelevance(index, true)}>Relevant</button>
+            <button onClick={() => toggleRelevance(index)}>Relevant</button>
           </li>
         ))}
       </ul>

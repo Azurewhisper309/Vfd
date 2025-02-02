@@ -1,3 +1,4 @@
+
 import { createContext, useState } from "react";
 
 // Create Context
@@ -8,13 +9,14 @@ export const CRMProvider = ({ children }) => {
   const [forms, setForms] = useState([]); // List of forms
   const [userId, setUserId] = useState("u9349535");
   const [issues, setIssues] = useState([]); // Issues state
-  const [form, setForm] = useState({ name: "", uniqueNumber: "", typeOf: "option1", takeNumber: "" ,statues:"new"});
+  const [form, setForm] = useState({ name: "", uniqueNumber: "", typeOf: "option1", takeNumber: "" ,status:""});
   const [not, setNot] = useState([]); // Not relevant forms
   const [isClicked, setIsClicked] = useState(false); // Show/hide form
   const [isEditing, setIsEditing] = useState(false); // Editing state
   const [editingId, setEditingId] = useState(""); // Current editing form ID
   const [isdashEdit, setIsDashEdit] = useState(false); // Toggle dashboard edit mode
-
+  const [allForms,setAllForms]=useState([]);
+  
   return (
     <CRMContext.Provider
       value={{
@@ -36,6 +38,8 @@ export const CRMProvider = ({ children }) => {
         setEditingId,
         isdashEdit,
         setIsDashEdit,
+        allForms,
+        setAllForms,
       }}
     >
       {children}
